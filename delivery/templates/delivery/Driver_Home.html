@@ -1,0 +1,15 @@
+{% extends 'delivery/base.html' %}
+
+{% block content %}
+<div class="page-center">
+    <div class="card">
+        <h1 style="margin-top: 0; text-align: center;">Driver Dashboard</h1>
+        <p style="text-align: center;">Welcome back, {{ user.first_name }}!</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <a href="{% url 'waiting_orders' %}" class="btn" style="text-align: center; text-decoration: none; padding: 10px; background-color: #ff4757; color: white; border-radius: 5px;">View Waiting Orders</a>
+            <a href="{% url 'driver_orders' %}" class="btn" style="text-align: center; text-decoration: none; padding: 10px; background-color: #2f3542; color: white; border-radius: 5px;">My Active Orders</a>
+            <a href="{% url 'completed_orders' %}" class="btn" style="text-align: center; text-decoration: none; padding: 10px; background-color: #2ed573; color: white; border-radius: 5px;">Completed Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

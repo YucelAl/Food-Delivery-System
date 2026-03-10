@@ -1,0 +1,40 @@
+{% extends 'delivery/base.html' %}
+
+{% block content %}
+<h1>Checkout</h1>
+<p>Review your order and proceed to payment.</p>
+
+{% if cart %}
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+    <thead>
+        <tr style="border-bottom: 2px solid #ddd; text-align: left;">
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart %}
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 10px 0;">{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>£{{ item.price|stringformat:".2f" }}</td>
+            <td>£{{ item.item_total|stringformat:".2f" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3 style="text-align: right;">Total: £{{ total|stringformat:".2f" }}</h3>
+
+<!-- Generating a random order ID for display purposes -->
+<form method="post" action="{% url 'order_detail' 12345 %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" style="float: right;">Place Order</button>
+</form>
+{% else %}
+<p>Your cart is empty.</p>
+<a href="{% url 'restaurants' %}">Go back to restaurants</a>
+{% endif %}
+{% endblock %}

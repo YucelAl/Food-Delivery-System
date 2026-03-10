@@ -1,0 +1,21 @@
+{% extends 'delivery/base.html' %}
+
+{% block content %}
+<div class="page-center">
+  <div class="card">
+    <h1 style="margin-top: 0; text-align: center;">Login</h1>
+    <form method="post" class="form-vertical">
+        {% csrf_token %}
+        <p>
+            <label for="id_email">Email</label>
+            <input id="id_email" type="email" name="email" required>
+        </p>
+        <p>
+            <label for="id_password">Password</label>
+            <input id="id_password" type="password" name="password" required>
+        </p>
+        <button type="submit">Login</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

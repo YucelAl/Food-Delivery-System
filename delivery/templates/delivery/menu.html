@@ -1,0 +1,52 @@
+{% extends 'delivery/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Menu for {{ restaurant.name }}</h1>
+<div class="restaurant-info">
+    <p><strong>Cuisine:</strong> {{ restaurant.cuisine_type }}</p>
+    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+    <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+    <p><strong>Opening Hours:</strong> {{ restaurant.opening_time }} - {{ restaurant.closing_time }}</p>
+</div>
+
+<p>Items available at this restaurant:</p>
+{% if items %}
+<form method="post" action="{% url 'checkout' %}">
+    {% csrf_token %}
+    <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+    <ul>
+        {% for item in items %}
+        <li style="margin-bottom: 10px;">
+            <span style="display: inline-block; min-width: 200px;">
+                {{ item.name }} - £{{ item.price|stringformat:".2f" }}
+            </span>
+            <div style="display: inline-block;">
+                <button type="button" onclick="changeQuantity('qty_{{ forloop.counter }}', -1)">-</button>
+                <input type="number" id="qty_{{ forloop.counter }}" name="quantity_{{ forloop.counter }}" value="0" min="0" style="width: 50px; text-align: center;">
+                <button type="button" onclick="changeQuantity('qty_{{ forloop.counter }}', 1)">+</button>
+                <input type="hidden" name="item_name_{{ forloop.counter }}" value="{{ item.name }}">
+                <input type="hidden" name="item_price_{{ forloop.counter }}" value="{{ item.price }}">
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <input type="hidden" name="item_count" value="{{ items|length }}">
+    <div style="margin-top: 20px;">
+        <button type="submit" class="btn btn-primary">Checkout</button>
+    </div>
+</form>
+
+<script>
+function changeQuantity(id, delta) {
+    var input = document.getElementById(id);
+    var value = parseInt(input.value) || 0;
+    value += delta;
+    if (value < 0) value = 0;
+    input.value = value;
+}
+</script>
+{% else %}
+<p>No menu items available for this restaurant.</p>
+{% endif %}
+{% endblock %}

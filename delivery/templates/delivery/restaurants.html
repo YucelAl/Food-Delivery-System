@@ -1,0 +1,36 @@
+{% extends 'delivery/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="page-title">Restaurants</h1>
+<div class="restaurant-grid">
+    <div class="restaurant-row">
+        <div class="restaurant-item">
+            <a href="{% url 'menu' 1 %}">
+                <img src="{% static 'delivery/Images/Pizza Palace.png' %}" alt="Pizza Palace" style="width: 144px; height: auto;">
+                <br>Pizza Palace
+            </a>
+        </div>
+        <div class="restaurant-item">
+            <a href="{% url 'menu' 2 %}">
+                <img src="{% static 'delivery/Images/Dragon Garden.png' %}" alt="Dragon Garden" style="width: 144px; height: auto;">
+                <br>Dragon Garden
+            </a>
+        </div>
+    </div>
+    <div class="restaurant-row">
+        <div class="restaurant-item">
+            <a href="{% url 'menu' 3 %}">
+                <img src="{% static 'delivery/Images/Spice House.png' %}" alt="Spice House" style="width: 144px; height: auto;">
+                <br>Spice House
+            </a>
+        </div>
+        <div class="restaurant-item">
+            <a href="{% url 'menu' 4 %}">
+                <img src="{% static 'delivery/Images/Burger Barn.png' %}" alt="Burger Barn" style="width: 144px; height: auto;">
+                <br>Burger Barn
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
