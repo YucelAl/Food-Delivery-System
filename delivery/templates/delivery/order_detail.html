@@ -1,3 +1,7 @@
+<!--
+    Order detail/confirmation page template. 
+    Displays a summary of the order, including customer details and items purchased.
+-->
 {% extends 'delivery/base.html' %}
 
 {% block content %}
@@ -6,6 +10,7 @@
 <p>Status: Pending</p>
 
 <h3>Customer Details</h3>
+<!-- Information about the user who placed the order -->
 {% if user.is_authenticated %}
 <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
 <p><strong>Email:</strong> {{ user.email }}</p>
@@ -20,6 +25,7 @@
 {% endif %}
 
 <h3>Order Details</h3>
+<!-- Summary of items in the order, their quantities, and total cost -->
 {% if cart %}
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
     <thead>

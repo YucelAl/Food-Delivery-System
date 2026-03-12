@@ -1,9 +1,14 @@
+<!--
+    User registration page template. 
+    Collects user information and allows them to register as either a Customer or a Driver.
+-->
 {% extends 'delivery/base.html' %}
 
 {% block content %}
 <div class="page-center">
     <div class="card">
         <h1 style="margin-top: 0; text-align: center;">Register</h1>
+        <!-- Registration form that submits via POST to the register view -->
         <form method="post" class="form-vertical">
             {% csrf_token %}
             <p>
@@ -23,6 +28,7 @@
                 <input id="id_phone" type="text" name="phone" required>
             </p>
             <p>
+                <!-- Dynamically update the address label based on user type using JavaScript -->
                 <label for="id_address" id="label_address">Address</label>
                 <input id="id_address" type="text" name="address" required>
             </p>
@@ -43,6 +49,11 @@
 </div>
 
 <script>
+/**
+ * Updates the address label based on the selected user type.
+ * If 'Driver' is selected, it prompts for 'Vehicle Make/Model'.
+ * Otherwise, it shows 'Address'.
+ */
 function updateAddressLabel() {
     var userType = document.getElementById("id_user_type").value;
     var label = document.getElementById("label_address");

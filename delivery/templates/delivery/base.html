@@ -1,3 +1,8 @@
+<!--
+    Base template for the Food Delivery System. 
+    Provides the common structure including the head, navigation bar, and message alerts.
+    Other templates should extend this file and define the 'content' block.
+-->
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -7,6 +12,7 @@
 </head>
 <body>
     <header>
+        <!-- Navigation Bar: Changes dynamically based on whether the user is logged in and their user type (Customer or Driver) -->
         <nav class="navbar">
             <a href="{% url 'home' %}">Home</a>
             {% if user.is_authenticated %}
@@ -25,6 +31,7 @@
         </nav>
     </header>
     <main>
+        <!-- Display success or error messages from the Django messaging framework -->
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
@@ -34,6 +41,7 @@
                 {% endfor %}
             </div>
         {% endif %}
+        <!-- The 'content' block will be overridden by child templates -->
         {% block content %}{% endblock %}
     </main>
     <div class="bg"></div>

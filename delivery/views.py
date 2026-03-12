@@ -6,12 +6,20 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 def home(request):
+    """
+    Renders the home page. 
+    If a logged-in user is a driver, they are redirected to the driver home page.
+    """
     if request.user.is_authenticated:
         if hasattr(request.user, 'profile') and request.user.profile.user_type == 'driver':
             return redirect('driver_home')
     return render(request, 'delivery/home.html')
 
 def register(request):
+    """
+    Handles user registration. 
+    Captures user details, creates a Django User, and an associated Profile.
+    """
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -39,6 +47,10 @@ def register(request):
     return render(request, 'delivery/register.html')
 
 def login_view(request):
+    """
+    Handles user login. 
+    Authenticates the user and redirects them based on their user type (Customer or Driver).
+    """
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -56,12 +68,20 @@ def login_view(request):
 
 @login_required
 def driver_home(request):
+    """
+    Renders the driver's dashboard. 
+    Only accessible to users with the 'driver' user type.
+    """
     if request.user.profile.user_type != 'driver':
         return redirect('home')
     return render(request, 'delivery/Driver_Home.html')
 
 @login_required
 def waiting_orders(request):
+    """
+    Displays all orders that are currently in 'waiting' status.
+    Available only to drivers.
+    """
     if request.user.profile.user_type != 'driver':
         return redirect('home')
     orders = Order.objects.filter(status='waiting')
@@ -69,6 +89,9 @@ def waiting_orders(request):
 
 @login_required
 def driver_orders(request):
+    """
+    Displays orders that the current driver has accepted and are 'ongoing'.
+    """
     if request.user.profile.user_type != 'driver':
         return redirect('home')
     orders = Order.objects.filter(driver=request.user, status='ongoing')
@@ -76,6 +99,9 @@ def driver_orders(request):
 
 @login_required
 def completed_orders(request):
+    """
+    Displays a history of orders that the current driver has successfully 'completed'.
+    """
     if request.user.profile.user_type != 'driver':
         return redirect('home')
     orders = Order.objects.filter(driver=request.user, status='completed')
@@ -83,6 +109,10 @@ def completed_orders(request):
 
 @login_required
 def accept_order(request, order_id):
+    """
+    Allows a driver to accept a 'waiting' order. 
+    Updates the order status to 'ongoing' and assigns the driver.
+    """
     if request.user.profile.user_type != 'driver':
         return redirect('home')
     order = get_object_or_404(Order, id=order_id, status='waiting')
@@ -94,6 +124,9 @@ def accept_order(request, order_id):
 
 @login_required
 def complete_order(request, order_id):
+    """
+    Allows a driver to mark an 'ongoing' order as 'completed'.
+    """
     if request.user.profile.user_type != 'driver':
         return redirect('home')
     order = get_object_or_404(Order, id=order_id, driver=request.user, status='ongoing')
@@ -103,13 +136,23 @@ def complete_order(request, order_id):
     return redirect('completed_orders')
 
 def logout_view(request):
+    """
+    Logs out the current user and redirects to the home page.
+    """
     logout(request)
     return redirect('home')
 
 def restaurants(request):
+    """
+    Renders the page listing all available restaurants.
+    """
     return render(request, 'delivery/restaurants.html')
 
 def menu(request, restaurant_id):
+    """
+    Displays the menu for a specific restaurant.
+    Retrieves menu items and their corresponding prices.
+    """
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     menu_items = MenuItem.objects.filter(restaurant_id=restaurant_id)
     # Get prices from OrderItem, linked by menuitem_id and restaurant_id as per description
@@ -130,6 +173,11 @@ def menu(request, restaurant_id):
     })
 
 def checkout(request):
+    """
+    Handles the checkout process.
+    On POST: Processes the cart items, calculates the total, and creates an Order.
+    On GET: Displays the current cart and total.
+    """
     if request.method == 'POST':
         restaurant_id = request.POST.get('restaurant_id')
         item_count = int(request.POST.get('item_count', 0))
@@ -181,6 +229,9 @@ def checkout(request):
     })
 
 def order_detail(request, order_id):
+    """
+    Displays the summary and details of a specific order after checkout.
+    """
     # Fetch cart details and total from session
     cart = request.session.get('cart', [])
     total = request.session.get('cart_total', 0.0)

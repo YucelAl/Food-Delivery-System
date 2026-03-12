@@ -1,8 +1,14 @@
+<!--
+    Restaurant menu page template. 
+    Displays information about a specific restaurant and its menu items.
+    Allows users to select quantities and proceed to checkout.
+-->
 {% extends 'delivery/base.html' %}
 {% load static %}
 
 {% block content %}
 <h1>Menu for {{ restaurant.name }}</h1>
+<!-- Restaurant general information (Cuisine, Address, Phone, Hours) -->
 <div class="restaurant-info">
     <p><strong>Cuisine:</strong> {{ restaurant.cuisine_type }}</p>
     <p><strong>Address:</strong> {{ restaurant.address }}</p>
@@ -12,6 +18,7 @@
 
 <p>Items available at this restaurant:</p>
 {% if items %}
+<!-- Menu item selection form: sends quantities to the checkout view -->
 <form method="post" action="{% url 'checkout' %}">
     {% csrf_token %}
     <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
@@ -38,6 +45,11 @@
 </form>
 
 <script>
+/**
+ * Changes the quantity for a specific menu item.
+ * {string} id - The element ID of the input field.
+ * {number} delta - The amount to change the quantity by (+1 or -1).
+ */
 function changeQuantity(id, delta) {
     var input = document.getElementById(id);
     var value = parseInt(input.value) || 0;

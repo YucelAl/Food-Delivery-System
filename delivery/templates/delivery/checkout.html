@@ -1,3 +1,8 @@
+<!--
+    Checkout page template. 
+    Summarizes the selected items and total price.
+    Allows the user to confirm and place their order.
+-->
 {% extends 'delivery/base.html' %}
 
 {% block content %}
@@ -28,6 +33,8 @@
 
 <h3 style="text-align: right;">Total: £{{ total|stringformat:".2f" }}</h3>
 
+<!-- Order placement form: redirects to the order confirmation page -->
+<!-- In a real scenario, this might be handled via an API or more complex view logic -->
 <!-- Generating a random order ID for display purposes -->
 <form method="post" action="{% url 'order_detail' 12345 %}">
     {% csrf_token %}
