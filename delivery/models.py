@@ -51,7 +51,7 @@ class MenuItem(models.Model):
     restaurant_id = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'menuitem'
 
 class OrderItem(models.Model):
@@ -65,7 +65,7 @@ class OrderItem(models.Model):
     restaurant_id = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orderitem'
 
 class Restaurant(models.Model):
@@ -82,5 +82,5 @@ class Restaurant(models.Model):
     closing_time = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'restaurant'
