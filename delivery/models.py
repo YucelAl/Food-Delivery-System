@@ -60,7 +60,7 @@ class OrderItem(models.Model):
     with its price at the time of order and the restaurant ID.
     This model is unmanaged and maps to the 'orderitem' table.
     """
-    menuitem = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    menuitem = models.ForeignKey(MenuItem, on_delete=models.CASCADE, null=True, blank=True)
     price = models.FloatField()
     restaurant_id = models.IntegerField()
 

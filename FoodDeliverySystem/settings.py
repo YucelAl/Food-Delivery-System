@@ -76,16 +76,28 @@ WSGI_APPLICATION = 'FoodDeliverySystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 import dj_database_url
-if os.environ.get('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+import sys
+
+db_url = os.environ.get('DATABASE_URL')
+if db_url:
+    print("DEBUG: Found DATABASE_URL, attempting to configure PostgreSQL.", file=sys.stderr)
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        )
+    }
+    print(f"DEBUG: DATABASES['default'] engine is now {DATABASES['default'].get('ENGINE')}", file=sys.stderr)
+else:
+    print("DEBUG: DATABASE_URL not found, falling back to SQLite.", file=sys.stderr)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.environ.get('SQLITE_DB_PATH', BASE_DIR / 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
