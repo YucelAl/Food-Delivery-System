@@ -6,4 +6,5 @@ set -o errexit
 pip install -r requirements.txt
 
 # Run migrations
+echo "Running migrations..."
 python manage.py migrate

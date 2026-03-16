@@ -85,7 +85,10 @@ DATABASES = {
 
 import dj_database_url
 if os.environ.get('DATABASE_URL'):
+    print(f"DEBUG: Found DATABASE_URL, using it for DB configuration.")
     DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+else:
+    print(f"DEBUG: DATABASE_URL not found, using SQLite at {BASE_DIR / 'db.sqlite3'}")
 
 
 # Password validation
