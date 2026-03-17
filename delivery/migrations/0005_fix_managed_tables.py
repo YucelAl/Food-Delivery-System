@@ -10,42 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Create restaurant table if it doesn't exist
-        migrations.RunSQL(
-            sql="""
-                CREATE TABLE IF NOT EXISTS restaurant (
-                    id SERIAL PRIMARY KEY, 
-                    name VARCHAR(255) NOT NULL, 
-                    cuisine_type VARCHAR(255), 
-                    address TEXT, 
-                    phone VARCHAR(20), 
-                    opening_time VARCHAR(50), 
-                    closing_time VARCHAR(50)
-                );
-            """,
-            reverse_sql="DROP TABLE IF EXISTS restaurant;"
-        ),
-        # Create menuitem table if it doesn't exist
-        migrations.RunSQL(
-            sql="""
-                CREATE TABLE IF NOT EXISTS menuitem (
-                    id SERIAL PRIMARY KEY, 
-                    name VARCHAR(255) NOT NULL, 
-                    restaurant_id INTEGER NOT NULL
-                );
-            """,
-            reverse_sql="DROP TABLE IF EXISTS menuitem;"
-        ),
-        # Create orderitem table if it doesn't exist
-        migrations.RunSQL(
-            sql="""
-                CREATE TABLE IF NOT EXISTS orderitem (
-                    id SERIAL PRIMARY KEY, 
-                    price DOUBLE PRECISION NOT NULL, 
-                    restaurant_id INTEGER NOT NULL, 
-                    menuitem_id INTEGER REFERENCES menuitem(id) ON DELETE CASCADE
-                );
-            """,
-            reverse_sql="DROP TABLE IF EXISTS orderitem;"
-        ),
+        # Tables are now handled in migration 0003
     ]
