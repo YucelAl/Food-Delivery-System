@@ -153,18 +153,16 @@ def menu(request, restaurant_id):
     Displays the menu for a specific restaurant.
     Retrieves menu items and their corresponding prices.
     """
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    restaurant = get_object_or_404(Restaurant, restaurant_id=restaurant_id)
     menu_items = MenuItem.objects.filter(restaurant_id=restaurant_id)
-    # Get prices from OrderItem, linked by menuitem_id and restaurant_id as per description
+    # Get prices from OrderItem, linked by item_id and restaurant_id as per description
     # Since we want to display price per item, we'll join them
-    order_items = OrderItem.objects.filter(restaurant_id=restaurant_id).select_related('menuitem')
-    
-    # Building a list of items with their prices
+    # Actually, MenuItem already has a price field in our model.
     items = []
-    for oi in order_items:
+    for item in menu_items:
         items.append({
-            'name': oi.menuitem.name,
-            'price': oi.price
+            'name': item.name,
+            'price': item.price
         })
         
     return render(request, 'delivery/menu.html', {
@@ -206,7 +204,7 @@ def checkout(request):
         
         # Create persistent Order for drivers to see
         if request.user.is_authenticated:
-            restaurant = Restaurant.objects.get(id=restaurant_id)
+            restaurant = Restaurant.objects.get(restaurant_id=restaurant_id)
             Order.objects.create(
                 customer=request.user,
                 restaurant_name=restaurant.name,
