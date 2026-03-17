@@ -54,6 +54,7 @@ class MenuItem(models.Model):
     is_available = models.BooleanField(default=True)
 
     class Meta:
+        managed = True
         db_table = 'menuitem'
 
 class OrderItem(models.Model):
@@ -68,6 +69,7 @@ class OrderItem(models.Model):
     subtotal = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
+        managed = True
         db_table = 'orderitem'
 
 class Restaurant(models.Model):
@@ -84,4 +86,5 @@ class Restaurant(models.Model):
     closing_time = models.TimeField(blank=True, null=True)
 
     class Meta:
+        managed = True
         db_table = 'restaurant'
