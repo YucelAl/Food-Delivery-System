@@ -17,6 +17,10 @@ class Profile(models.Model):
     address = models.TextField(blank=True, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='customer')
 
+    class Meta:
+        managed = True
+        db_table = 'delivery_profile'
+
     def __str__(self):
         """Returns a string representation of the profile, showing the username and user type."""
         return f"{self.user.username} ({self.get_user_type_display()})"
@@ -37,6 +41,10 @@ class Order(models.Model):
     total_price = models.FloatField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='waiting')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = True
+        db_table = 'delivery_order'
 
     def __str__(self):
         """Returns a string representation of the order, including its ID and status."""

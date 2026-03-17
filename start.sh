@@ -4,7 +4,7 @@ set -o errexit
 
 # Run migrations at startup
 echo "DEBUG: Running migrations at startup..."
-python manage.py migrate --noinput
+python manage.py migrate --noinput --fake-initial
 
 # DEBUG: List tables after migration
 echo "DEBUG: Listing database tables..."
