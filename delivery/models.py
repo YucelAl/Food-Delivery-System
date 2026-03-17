@@ -47,6 +47,7 @@ class MenuItem(models.Model):
     Represents an item on a restaurant's menu. 
     This model is unmanaged and maps to the 'menuitem' table in the database.
     """
+    item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     restaurant_id = models.IntegerField()
 
@@ -60,6 +61,7 @@ class OrderItem(models.Model):
     with its price at the time of order and the restaurant ID.
     This model is unmanaged and maps to the 'orderitem' table.
     """
+    order_item_id = models.AutoField(primary_key=True)
     price = models.FloatField()
     restaurant_id = models.IntegerField()
 
@@ -73,6 +75,7 @@ class Restaurant(models.Model):
     contact details, and operating hours.
     This model is unmanaged and maps to the 'restaurant' table.
     """
+    restaurant_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     cuisine_type = models.CharField(max_length=255, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
