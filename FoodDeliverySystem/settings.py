@@ -96,9 +96,7 @@ if db_url:
     }
 else:
     # On Render, if DATABASE_URL is missing, it will fall back to SQLite
-    # However, Render's disk is ephemeral by default, so any SQLite data is lost on restart
-    # To fix 'no such table: auth_user', you should set up a PostgreSQL DB on Render and set DATABASE_URL
-    print("WARNING: DATABASE_URL not found, falling back to SQLite. SQLite on Render is ephemeral!", file=sys.stderr)
+    print("DEBUG: DATABASE_URL not found, falling back to SQLite.", file=sys.stderr)
     sqlite_path = os.environ.get('SQLITE_DB_PATH', str(BASE_DIR / 'db.sqlite3'))
     print(f"DEBUG: Using SQLite at {sqlite_path}", file=sys.stderr)
     DATABASES = {

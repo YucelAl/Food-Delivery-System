@@ -51,7 +51,7 @@ class MenuItem(models.Model):
     restaurant_id = models.IntegerField()
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'menuitem'
 
 class OrderItem(models.Model):
@@ -60,12 +60,11 @@ class OrderItem(models.Model):
     with its price at the time of order and the restaurant ID.
     This model is unmanaged and maps to the 'orderitem' table.
     """
-    menuitem = models.ForeignKey(MenuItem, on_delete=models.CASCADE, null=True, blank=True)
     price = models.FloatField()
     restaurant_id = models.IntegerField()
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'orderitem'
 
 class Restaurant(models.Model):
@@ -82,5 +81,5 @@ class Restaurant(models.Model):
     closing_time = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'restaurant'
