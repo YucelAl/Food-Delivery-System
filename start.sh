@@ -6,6 +6,10 @@ set -o errexit
 echo "DEBUG: Running migrations at startup..."
 python manage.py migrate --noinput
 
+# Import initial data from fooddeliverysys.sql (safe to run multiple times due to update_or_create)
+echo "DEBUG: Importing data from fooddeliverysys.sql..."
+python import_sql_data.py
+
 # Start Gunicorn
 echo "DEBUG: Starting Gunicorn..."
 gunicorn FoodDeliverySystem.wsgi:application

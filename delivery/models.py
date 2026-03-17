@@ -45,44 +45,43 @@ class Order(models.Model):
 class MenuItem(models.Model):
     """
     Represents an item on a restaurant's menu. 
-    This model is unmanaged and maps to the 'menuitem' table in the database.
     """
     item_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     restaurant_id = models.IntegerField()
+    description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    is_available = models.BooleanField(default=True)
 
     class Meta:
-        managed = False
         db_table = 'menuitem'
 
 class OrderItem(models.Model):
     """
     Represents an item within a specific order, linking a menu item 
     with its price at the time of order and the restaurant ID.
-    This model is unmanaged and maps to the 'orderitem' table.
     """
     order_item_id = models.AutoField(primary_key=True)
-    price = models.FloatField()
-    restaurant_id = models.IntegerField()
+    order_id = models.IntegerField()
+    item_id = models.IntegerField()
+    quantity = models.IntegerField()
+    subtotal = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
-        managed = False
         db_table = 'orderitem'
 
 class Restaurant(models.Model):
     """
     Stores information about a restaurant, including its name, cuisine, 
     contact details, and operating hours.
-    This model is unmanaged and maps to the 'restaurant' table.
     """
     restaurant_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     cuisine_type = models.CharField(max_length=255, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    opening_time = models.CharField(max_length=50, blank=True, null=True)
-    closing_time = models.CharField(max_length=50, blank=True, null=True)
+    opening_time = models.TimeField(blank=True, null=True)
+    closing_time = models.TimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'restaurant'
