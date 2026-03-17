@@ -91,8 +91,8 @@ def import_data():
     # 3. Customers -> User/Profile
     if 'customer' in sql_data:
         print("Importing Customers...")
-        if 'delivery_profile' not in connection.introspection.table_names():
-             print("ERROR: 'delivery_profile' table does not exist. Skipping customer import.")
+        if 'user_profile' not in connection.introspection.table_names():
+             print("ERROR: 'user_profile' table does not exist. Skipping customer import.")
         else:
             for row in sql_data['customer']:
                 # `customer_id`, `first_name`, `last_name`, `email`, `phone`, `address`, `registration_date`
@@ -110,8 +110,8 @@ def import_data():
     # 4. Drivers -> User/Profile
     if 'driver' in sql_data:
         print("Importing Drivers...")
-        if 'delivery_profile' not in connection.introspection.table_names():
-             print("ERROR: 'delivery_profile' table does not exist. Skipping driver import.")
+        if 'user_profile' not in connection.introspection.table_names():
+             print("ERROR: 'user_profile' table does not exist. Skipping driver import.")
         else:
             for row in sql_data['driver']:
                 # `driver_id`, `first_name`, `last_name`, `phone`, `vehicle_type`, `is_available`

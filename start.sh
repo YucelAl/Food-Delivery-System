@@ -4,12 +4,12 @@ set -o errexit
 
 # Try to force create missing tables if any
 echo "DEBUG: Checking for missing tables..."
-MISSING=$(python manage.py shell -c "from django.db import connection; from delivery.models import Restaurant, MenuItem, Order, OrderItem, Profile; tables = connection.introspection.table_names(); models_to_check = [Restaurant, MenuItem, Order, OrderItem, Profile]; missing = [m._meta.db_table for m in models_to_check if m._meta.db_table not in tables]; print(len(missing))")
+MISSING=$(python manage.py shell -c "from django.db import connection; from delivery.models import Restaurant, MenuItem, Order, OrderItem, Profile; tables = connection.introspection.table_names(); models_to_check = [Restaurant, MenuItem, Order, OrderItem, Profile]; missing = [m._meta.db_table for m in models_to_check if m._meta.db_table not in tables]; print(len(missing))" 2>/dev/null || echo "1")
 
 if [ "$MISSING" != "0" ]; then
-    echo "DEBUG: $MISSING tables are missing. Attempting to force migration..."
+    echo "DEBUG: $MISSING tables are missing or error occurred. Attempting to force migration recovery..."
     # Force Django to think the migration hasn't run if tables are missing
-    python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute(\"DELETE FROM django_migrations WHERE app='delivery'\")"
+    python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute(\"CREATE TABLE IF NOT EXISTS django_migrations (id serial PRIMARY KEY, app varchar(255), name varchar(255), applied timestamptz)\"); cursor.execute(\"DELETE FROM django_migrations WHERE app='delivery'\"); connection.commit()" || echo "WARNING: Could not clear migration history."
 fi
 
 # Run migrations at startup

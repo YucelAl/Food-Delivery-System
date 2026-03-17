@@ -19,7 +19,7 @@ class Profile(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'delivery_profile'
+        db_table = 'user_profile'
 
     def __str__(self):
         """Returns a string representation of the profile, showing the username and user type."""
