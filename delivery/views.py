@@ -155,14 +155,13 @@ def menu(request, restaurant_id):
     """
     restaurant = get_object_or_404(Restaurant, restaurant_id=restaurant_id)
     menu_items = MenuItem.objects.filter(restaurant_id=restaurant_id)
-    # Get prices from OrderItem, linked by item_id and restaurant_id as per description
-    # Since we want to display price per item, we'll join them
-    # Actually, MenuItem already has a price field in our model.
+    # MenuItem already has a price field in our model.
     items = []
     for item in menu_items:
         items.append({
             'name': item.name,
-            'price': item.price
+            'price': item.price,
+            'item_id': item.item_id
         })
         
     return render(request, 'delivery/menu.html', {
@@ -178,18 +177,26 @@ def checkout(request):
     """
     if request.method == 'POST':
         restaurant_id = request.POST.get('restaurant_id')
+        if not restaurant_id:
+             messages.error(request, "Invalid restaurant selection.")
+             return redirect('restaurants')
+        
         item_count = int(request.POST.get('item_count', 0))
         
         cart = []
         total = 0.0
         
         for i in range(1, item_count + 1):
-            quantity = int(request.POST.get(f'quantity_{i}', 0))
+            item_id = request.POST.get(f'item_id_{i}')
+            if not item_id:
+                continue
+            quantity = int(request.POST.get(f'quantity_{item_id}', 0))
             if quantity > 0:
-                name = request.POST.get(f'item_name_{i}')
-                price = float(request.POST.get(f'item_price_{i}'))
+                name = request.POST.get(f'item_name_{item_id}')
+                price = float(request.POST.get(f'item_price_{item_id}'))
                 
                 cart.append({
+                    'item_id': item_id,
                     'name': name,
                     'price': price,
                     'quantity': quantity,
@@ -203,14 +210,26 @@ def checkout(request):
         request.session['restaurant_id'] = restaurant_id
         
         # Create persistent Order for drivers to see
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and cart:
             restaurant = Restaurant.objects.get(restaurant_id=restaurant_id)
-            Order.objects.create(
+            order = Order.objects.create(
                 customer=request.user,
                 restaurant_name=restaurant.name,
                 total_price=total,
                 status='waiting'
             )
+            
+            # Also create OrderItem entries
+            for item in cart:
+                OrderItem.objects.create(
+                    order_id=order.id,
+                    item_id=int(item['item_id']),
+                    quantity=item['quantity'],
+                    subtotal=item['item_total']
+                )
+            
+            messages.success(request, f"Order #{order.id} placed successfully!")
+            return redirect('order_detail', order_id=order.id)
         
         return render(request, 'delivery/checkout.html', {
             'cart': cart,
@@ -220,6 +239,10 @@ def checkout(request):
     # GET request: return checkout page with session data if exists
     cart = request.session.get('cart', [])
     total = request.session.get('cart_total', 0.0)
+    
+    if not cart:
+        messages.warning(request, "Your cart is empty.")
+        return redirect('restaurants')
     
     return render(request, 'delivery/checkout.html', {
         'cart': cart,

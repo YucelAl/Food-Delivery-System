@@ -21,7 +21,7 @@
 <!-- Menu item selection form: sends quantities to the checkout view -->
 <form method="post" action="{% url 'checkout' %}">
     {% csrf_token %}
-    <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+    <input type="hidden" name="restaurant_id" value="{{ restaurant.restaurant_id }}">
     <ul>
         {% for item in items %}
         <li style="margin-bottom: 10px;">
@@ -29,11 +29,12 @@
                 {{ item.name }} - £{{ item.price|stringformat:".2f" }}
             </span>
             <div style="display: inline-block;">
-                <button type="button" onclick="changeQuantity('qty_{{ forloop.counter }}', -1)">-</button>
-                <input type="number" id="qty_{{ forloop.counter }}" name="quantity_{{ forloop.counter }}" value="0" min="0" style="width: 50px; text-align: center;">
-                <button type="button" onclick="changeQuantity('qty_{{ forloop.counter }}', 1)">+</button>
-                <input type="hidden" name="item_name_{{ forloop.counter }}" value="{{ item.name }}">
-                <input type="hidden" name="item_price_{{ forloop.counter }}" value="{{ item.price }}">
+                <button type="button" onclick="changeQuantity('qty_{{ item.item_id }}', -1)">-</button>
+                <input type="number" id="qty_{{ item.item_id }}" name="quantity_{{ item.item_id }}" value="0" min="0" style="width: 50px; text-align: center;">
+                <button type="button" onclick="changeQuantity('qty_{{ item.item_id }}', 1)">+</button>
+                <input type="hidden" name="item_name_{{ item.item_id }}" value="{{ item.name }}">
+                <input type="hidden" name="item_price_{{ item.item_id }}" value="{{ item.price }}">
+                <input type="hidden" name="item_id_{{ forloop.counter }}" value="{{ item.item_id }}">
             </div>
         </li>
         {% endfor %}
