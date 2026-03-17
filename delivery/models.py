@@ -44,7 +44,7 @@ class Order(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'delivery_order'
+        db_table = 'order'
 
     def __str__(self):
         """Returns a string representation of the order, including its ID and status."""
