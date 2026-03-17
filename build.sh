@@ -6,9 +6,9 @@ set -o errexit
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# Run migrations
-echo "DEBUG: Running migrations..."
-python manage.py migrate --noinput || { echo "ERROR: Migration failed"; exit 1; }
+# Run migrations (Optional in build, better in start.sh for persistent disks)
+# echo "DEBUG: Running migrations..."
+# python manage.py migrate --noinput || { echo "ERROR: Migration failed"; exit 1; }
 
 # Collect static files
 python manage.py collectstatic --noinput
