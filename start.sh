@@ -2,14 +2,19 @@
 # exit on error
 set -o errexit
 
+# Try to force create missing tables if any
+echo "DEBUG: Checking for missing tables..."
+MISSING=$(python manage.py shell -c "from django.db import connection; from delivery.models import Restaurant, MenuItem, Order, OrderItem, Profile; tables = connection.introspection.table_names(); models_to_check = [Restaurant, MenuItem, Order, OrderItem, Profile]; missing = [m._meta.db_table for m in models_to_check if m._meta.db_table not in tables]; print(len(missing))")
+
+if [ "$MISSING" != "0" ]; then
+    echo "DEBUG: $MISSING tables are missing. Attempting to force migration..."
+    # Force Django to think the migration hasn't run if tables are missing
+    python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute(\"DELETE FROM django_migrations WHERE app='delivery'\")"
+fi
+
 # Run migrations at startup
 echo "DEBUG: Running migrations at startup..."
-# Set +e to allow error handling for migrations
-set +o errexit
-
-# Try normal migration first
-# We use --fake-initial but if it fails (likely due to inconsistent state where SOME tables exist)
-# we might need more aggressive measures.
+# Try a normal migrate first.
 python manage.py migrate --noinput --fake-initial
 EXIT_CODE=$?
 
