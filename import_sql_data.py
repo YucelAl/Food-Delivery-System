@@ -50,66 +50,80 @@ def import_data():
     # 1. Restaurants
     if 'restaurant' in sql_data:
         print("Importing Restaurants...")
-        for row in sql_data['restaurant']:
-            # `restaurant_id`, `name`, `cuisine_type`, `address`, `phone`, `opening_time`, `closing_time`
-            Restaurant.objects.update_or_create(
-                restaurant_id=int(row[0]),
-                defaults={
-                    'name': row[1],
-                    'cuisine_type': row[2],
-                    'address': row[3],
-                    'phone': row[4],
-                    'opening_time': row[5],
-                    'closing_time': row[6],
-                }
-            )
+        # Check if table exists
+        from django.db import connection
+        if 'restaurant' not in connection.introspection.table_names():
+            print("ERROR: 'restaurant' table does not exist. Skipping restaurant import.")
+        else:
+            for row in sql_data['restaurant']:
+                # `restaurant_id`, `name`, `cuisine_type`, `address`, `phone`, `opening_time`, `closing_time`
+                Restaurant.objects.update_or_create(
+                    restaurant_id=int(row[0]),
+                    defaults={
+                        'name': row[1],
+                        'cuisine_type': row[2],
+                        'address': row[3],
+                        'phone': row[4],
+                        'opening_time': row[5],
+                        'closing_time': row[6],
+                    }
+                )
 
     # 2. Menu Items
     if 'menuitem' in sql_data:
         print("Importing Menu Items...")
-        for row in sql_data['menuitem']:
-            # `item_id`, `restaurant_id`, `name`, `description`, `price`, `is_available`
-            MenuItem.objects.update_or_create(
-                item_id=int(row[0]),
-                defaults={
-                    'restaurant_id': int(row[1]),
-                    'name': row[2],
-                    'description': row[3],
-                    'price': decimal.Decimal(row[4]),
-                    'is_available': row[5] == '1',
-                }
-            )
+        if 'menuitem' not in connection.introspection.table_names():
+             print("ERROR: 'menuitem' table does not exist. Skipping menu item import.")
+        else:
+            for row in sql_data['menuitem']:
+                # `item_id`, `restaurant_id`, `name`, `description`, `price`, `is_available`
+                MenuItem.objects.update_or_create(
+                    item_id=int(row[0]),
+                    defaults={
+                        'restaurant_id': int(row[1]),
+                        'name': row[2],
+                        'description': row[3],
+                        'price': decimal.Decimal(row[4]),
+                        'is_available': row[5] == '1',
+                    }
+                )
 
     # 3. Customers -> User/Profile
     if 'customer' in sql_data:
         print("Importing Customers...")
-        for row in sql_data['customer']:
-            # `customer_id`, `first_name`, `last_name`, `email`, `phone`, `address`, `registration_date`
-            # row[0] is customer_id
-            username = row[3].split('@')[0] # Simple username from email
-            user, created = User.objects.get_or_create(
-                email=row[3],
-                defaults={'username': username, 'first_name': row[1], 'last_name': row[2]}
-            )
-            Profile.objects.update_or_create(
-                user=user,
-                defaults={'phone': row[4], 'address': row[5], 'user_type': 'customer'}
-            )
+        if 'delivery_profile' not in connection.introspection.table_names():
+             print("ERROR: 'delivery_profile' table does not exist. Skipping customer import.")
+        else:
+            for row in sql_data['customer']:
+                # `customer_id`, `first_name`, `last_name`, `email`, `phone`, `address`, `registration_date`
+                # row[0] is customer_id
+                username = row[3].split('@')[0] # Simple username from email
+                user, created = User.objects.get_or_create(
+                    email=row[3],
+                    defaults={'username': username, 'first_name': row[1], 'last_name': row[2]}
+                )
+                Profile.objects.update_or_create(
+                    user=user,
+                    defaults={'phone': row[4], 'address': row[5], 'user_type': 'customer'}
+                )
 
     # 4. Drivers -> User/Profile
     if 'driver' in sql_data:
         print("Importing Drivers...")
-        for row in sql_data['driver']:
-            # `driver_id`, `first_name`, `last_name`, `phone`, `vehicle_type`, `is_available`
-            username = f"driver_{row[0]}"
-            user, created = User.objects.get_or_create(
-                username=username,
-                defaults={'first_name': row[1], 'last_name': row[2]}
-            )
-            Profile.objects.update_or_create(
-                user=user,
-                defaults={'phone': row[3], 'user_type': 'driver'}
-            )
+        if 'delivery_profile' not in connection.introspection.table_names():
+             print("ERROR: 'delivery_profile' table does not exist. Skipping driver import.")
+        else:
+            for row in sql_data['driver']:
+                # `driver_id`, `first_name`, `last_name`, `phone`, `vehicle_type`, `is_available`
+                username = f"driver_{row[0]}"
+                user, created = User.objects.get_or_create(
+                    username=username,
+                    defaults={'first_name': row[1], 'last_name': row[2]}
+                )
+                Profile.objects.update_or_create(
+                    user=user,
+                    defaults={'phone': row[3], 'user_type': 'driver'}
+                )
 
     # Note: Order and OrderItem in the SQL file have some mismatch with Django models
     # but let's try to import them if they exist and are relevant.
